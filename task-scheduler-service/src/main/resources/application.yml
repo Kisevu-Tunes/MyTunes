@@ -1,0 +1,10 @@
+spring:
+  profile:
+    active: dev
+  application:
+    name: task-scheduler-service
+  cloud:
+    config:
+      name: task-scheduler-service
+  config:
+    import: "optional:configserver:"

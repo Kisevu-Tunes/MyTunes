@@ -1,0 +1,10 @@
+spring:
+  profile:
+    active: dev
+  application:
+    name: music-service
+  cloud:
+    config:
+      name: music-service
+  config:
+    import: "optional:configserver:"
