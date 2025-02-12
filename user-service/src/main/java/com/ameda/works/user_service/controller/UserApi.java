@@ -2,10 +2,13 @@ package com.ameda.works.user_service.controller;
 
 import com.ameda.works.user_service.dto.UserDTO;
 import com.ameda.works.user_service.mapper.DTOMapper;
+import com.ameda.works.user_service.model.StorageProviders;
 import com.ameda.works.user_service.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping
@@ -41,6 +44,14 @@ public class UserApi {
     public ResponseEntity<?> updateUser(@PathVariable String id,
                                         @RequestBody  UserDTO userDTO){
         userService.update(dtoMapper.map(userDTO),id);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+    @PutMapping(value = "/user/{id}/upload-profile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UserDTO> uploadProfileImage(@RequestParam(value = "file") MultipartFile file,
+                                                      @PathVariable String id,
+                                                      @RequestParam String key,
+                                                      @RequestParam StorageProviders storageProviders) throws Exception {
+        userService.uploadProfilePicture(id,key,file,storageProviders);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
