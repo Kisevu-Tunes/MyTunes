@@ -41,6 +41,11 @@ public class WebSecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
 
+        /*
+        *  stipulating endpoints that can be accessed publicly
+        *  and work without any need of authenticating,
+        *   DELETE & CREATE so far
+        * */
         return (web) -> {
             web.ignoring().requestMatchers(
                     HttpMethod.POST,
@@ -53,11 +58,14 @@ public class WebSecurityConfig {
             );
             web.ignoring().requestMatchers(
                     HttpMethod.DELETE,
-                    "/public/**"
+                    "/public/**",
+                    "/users/{id}"
             );
             web.ignoring().requestMatchers(
                     HttpMethod.PUT,
-                    "/public/**"
+                    "/public/**",
+                    "/users/forgot-password",
+                    "/users/{id}/send-verify-email"
             );
             web.ignoring().requestMatchers(
                             HttpMethod.OPTIONS,

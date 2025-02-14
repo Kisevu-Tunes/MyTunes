@@ -26,8 +26,10 @@ import java.util.Objects;
 public class KeycloakUserServiceImpl implements KeycloakUserService {
 
     private static final String UPDATE_PASSWORD = "UPDATE_PASSWORD";
+
     @Value("${keycloak.realm}")
     private String realm;
+
     private Keycloak keycloak;
 
     public KeycloakUserServiceImpl(Keycloak keycloak) {
@@ -59,10 +61,14 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         Response response = usersResource.create(user);
 
         if (Objects.equals(201, response.getStatus())) {
-
             List<UserRepresentation> representationList = usersResource.searchByUsername(userRegistrationRecord.username(), true);
             if (!CollectionUtils.isEmpty(representationList)) {
-                UserRepresentation userRepresentation1 = representationList.stream().filter(userRepresentation -> Objects.equals(false, userRepresentation.isEmailVerified())).findFirst().orElse(null);
+                UserRepresentation userRepresentation1 =
+                        representationList
+                                .stream()
+                                .filter(userRepresentation -> Objects.equals(false, userRepresentation.isEmailVerified()))
+                                .findFirst()
+                                .orElse(null);
                 assert userRepresentation1 != null;
                 emailVerification(userRepresentation1.getId());
                 if (userRegistrationRecord.artist()) {
@@ -75,7 +81,6 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
             }
             return userRegistrationRecord;
         }
-
 //        response.readEntity()
 
         return null;
@@ -88,21 +93,17 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
 
     @Override
     public UserRepresentation getUserById(String userId) {
-
-
         return getUsersResource().get(userId).toRepresentation();
     }
 
     @Override
     public void deleteUserById(String userId) {
-
         getUsersResource().delete(userId);
     }
 
 
     @Override
     public void emailVerification(String userId) {
-
         UsersResource usersResource = getUsersResource();
         usersResource.get(userId).sendVerifyEmail();
     }
@@ -130,11 +131,29 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         return rolesResource.get(role).toRepresentation();
     }
 
-    private void assignRoleToUser(String userId, String role) {
+    public void assignRoleToUser(String userId, String role) {
         UsersResource usersResource = getUsersResource();
         UserResource userResource = usersResource.get(userId);
         RoleRepresentation roleRepresentation = getRole(role);
         userResource.roles().realmLevel().add(Collections.singletonList(roleRepresentation));
+    }
+
+    @Override
+    public void deleteRoleFromUser(String userId, String role) {
+        UsersResource usersResource = getUsersResource();
+        UserResource userResource = usersResource.get(userId);
+        RoleRepresentation roleRepresentation = getRole(role);
+        userResource.roles().realmLevel().remove(Collections.singletonList(roleRepresentation));
+    }
+
+    @Override
+    public List<RoleRepresentation> getRoles(String userId) {
+        return getUser(userId).roles().realmLevel().listAll();
+    }
+
+    private UserResource getUser(String userId){
+        UsersResource usersResource = getUsersResource();
+        return usersResource.get(userId);
     }
 
     private RolesResource getRolesResource() {

@@ -3,6 +3,8 @@ package com.ameda.works.auth_service.controller;
 import com.ameda.works.auth_service.dto.UserRegistrationRecord;
 import com.ameda.works.auth_service.service.keycloak.KeycloakUserService;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -47,6 +49,31 @@ public class KeycloakUserApi {
     @PutMapping("/{userId}/send-verify-email")
     public void sendVerificationEmail(@PathVariable String userId) {
         keycloakUserService.emailVerification(userId);
+    }
+
+    @PutMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam String username){
+        keycloakUserService.forgotPassword(username);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/{userId}/assign-role-to-user")
+    public ResponseEntity<?> assignRoleToUser(@PathVariable String userId,
+                                              @RequestParam String role){
+        keycloakUserService.assignRoleToUser(userId, role);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/{userId}/un-assign-role-from-user")
+    public ResponseEntity<?> unassignRoleFromUser(@PathVariable String userId,
+                                                  @RequestParam String role){
+        keycloakUserService.deleteRoleFromUser(userId, role);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/{id}/roles")
+    public ResponseEntity<?> getRoles(@PathVariable String id){
+        return ResponseEntity.status(HttpStatus.OK).body(keycloakUserService.getRoles(id));
     }
 }
 
