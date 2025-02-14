@@ -17,5 +17,7 @@ public interface KeycloakUserService {
     void assignRoleToUser(String userId, String role);
     void deleteRoleFromUser(String userId, String role);
     List<RoleRepresentation> getRoles(String userId);
+    void assignToGroup(String userId, String groupId);
+    void removeFromGroup(String userId, String groupId);
 }
 

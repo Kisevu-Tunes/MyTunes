@@ -75,5 +75,19 @@ public class KeycloakUserApi {
     public ResponseEntity<?> getRoles(@PathVariable String id){
         return ResponseEntity.status(HttpStatus.OK).body(keycloakUserService.getRoles(id));
     }
+
+    @PutMapping("/{userId}/{groupId}/group")
+    public ResponseEntity<?> addToGroup(@PathVariable String userId,
+                                        @PathVariable String groupId){
+        keycloakUserService.assignToGroup(userId, groupId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/{userId}/{groupId}/group")
+    public ResponseEntity<?> removeFromGroup(@PathVariable String userId,
+                                             @PathVariable String groupId){
+        keycloakUserService.removeFromGroup(userId, groupId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
 

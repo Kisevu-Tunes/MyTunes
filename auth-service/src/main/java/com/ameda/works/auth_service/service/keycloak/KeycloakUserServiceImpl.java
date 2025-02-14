@@ -151,6 +151,18 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         return getUser(userId).roles().realmLevel().listAll();
     }
 
+    @Override
+    public void assignToGroup(String userId, String groupId) {
+        UserResource user = getUser(userId);
+        user.joinGroup(groupId);
+    }
+
+    @Override
+    public void removeFromGroup(String userId, String groupId) {
+        UserResource user = getUser(userId);
+        user.leaveGroup(groupId);
+    }
+
     private UserResource getUser(String userId){
         UsersResource usersResource = getUsersResource();
         return usersResource.get(userId);
