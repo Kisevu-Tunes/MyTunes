@@ -5,6 +5,7 @@ import com.ameda.works.auth_service.service.keycloak.KeycloakUserService;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -29,6 +30,7 @@ public class KeycloakUserApi {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('LISTENER')")
     public UserRepresentation getUser(Principal principal) {
 
         return keycloakUserService.getUserById(principal.getName());
